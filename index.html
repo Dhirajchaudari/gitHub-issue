@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <th>Title</th>
+            <th>Avatar_url</th>
+            <th>Id</th>
+            <th>Login</th>
+            <th>Type</th>
+        <tbody class="table-body">
+        </tbody>
+        </thead>
+    </table>
+
+    <button class="previous-btn">Previous</button>
+    <button class="next-btn">Next</button>
+    <script>
+        let pageNumber = 1
+        let tableBody = document.querySelector(".table-body")
+        const previousBtn = document.querySelector(".previous-btn");
+        const nextBtn = document.querySelector(".next-btn");
+        console.log(pageNumber)
+        const hello = async (pageNumber) => {
+            tableBody.innerHTML = ''
+            let url = `https://api.github.com/repositories/1296269/issues?page=${pageNumber}&per_page=5`;
+            console.log(url)
+            await fetch(url)
+                .then(resp => resp.json())
+                .then(respData => {
+                    let Id = [];
+                    let Login = [];
+                    let Avatar_url = [];
+                    let Type = [];
+                    let Title = []
+                    respData.forEach(element => {
+                        Id.push(element.user.id)
+                    });
+                    respData.forEach(element => {
+                        Login.push(element.user.login)
+                    });
+                    respData.forEach(element => {
+                        Avatar_url.push(element.user.avatar_url)
+                    });
+                    respData.forEach(element => {
+                        Type.push(element.user.type)
+                    });
+                    respData.forEach(element =>{
+                        Title.push(element.title)
+                    })
+                    console.log(Title)
+
+                    for (let i = 0; i < Title.length; i++) {
+
+                        var list = `<tr>
+                            <td>${Title[i]}</td>
+                    <td><img src="${Avatar_url[i]}" height="50px" width="50px" /></td>
+                    <td>${Id[i]}</td>
+                    <td>${Login[i]}</td>
+                    <td>${Type[i]}</td>
+                    </tr>`
+                        tableBody.innerHTML += list
+
+                    }
+
+                })
+        }
+        // hello(pageNumber)
+        function add(e){
+            pageNumber++
+            hello(pageNumber)
+        }
+        function sub(e){
+            pageNumber--;
+            hello(pageNumber)
+        }
+        nextBtn.addEventListener("click", add)
+        previousBtn.addEventListener("click",sub)
+
+    </script>
+</body>
+
+</html>
